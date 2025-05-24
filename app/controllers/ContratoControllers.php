@@ -23,7 +23,7 @@ class ContratoController {
         $stmt = $beneficiariosModel->getAll();
         $beneficiarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        require 'views/contratos/create.php';
+    
     }
 
     // Guardar nuevo contrato

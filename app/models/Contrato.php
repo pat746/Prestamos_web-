@@ -50,13 +50,17 @@ class Contrato {
 
         return $stmt->execute();
     }
-    public function getById($idcontrato) {
-    $query = "SELECT * FROM " . $this->table . " WHERE idcontrato = :idcontrato";
+    public function getById($id) {
+    $query = "SELECT contratos.*, beneficiarios.nombres, beneficiarios.apellidos 
+              FROM contratos 
+              INNER JOIN beneficiarios ON contratos.idbeneficiario = beneficiarios.idbeneficiario
+              WHERE contratos.idcontrato = :id";
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':idcontrato', $idcontrato, PDO::PARAM_INT);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
 
 
     // Puedes agregar más métodos según necesites, ej. getById, update, delete...

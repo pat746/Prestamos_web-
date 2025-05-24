@@ -2,6 +2,7 @@
 require_once '../../../app/controllers/ContratoControllers.php';
 require_once '../../../app/controllers/PagosController.php';
 require_once '../../../app/models/Pagos.php';
+require_once '../../../app/models/Contrato.php'; // Agregado para obtener nombre del cliente
 
 if (!isset($_GET['idcontrato']) || empty($_GET['idcontrato'])) {
     die('ID de contrato no especificado.');
@@ -9,13 +10,18 @@ if (!isset($_GET['idcontrato']) || empty($_GET['idcontrato'])) {
 
 $idcontrato = intval($_GET['idcontrato']);
 
-$pagosController = new PagoController(); // Nombre corregido
-$cronograma = $pagosController->index($idcontrato); // Variable corregida
+// Obtener datos del contrato y cliente
+$contratoModel = new Contrato();
+$contrato = $contratoModel->getById($idcontrato);
+$nombreCompleto = $contrato ? $contrato['apellidos'] . ', ' . $contrato['nombres'] : 'Desconocido';
+
+$pagosController = new PagoController();
+$cronograma = $pagosController->index($idcontrato);
 
 ob_start();
 ?>
 
-<h1>Cronograma de pagos - Contrato #<?= htmlspecialchars($idcontrato) ?></h1>
+<h1>Pagos del Contrato - <?= htmlspecialchars($nombreCompleto) ?></h1>
 
 <?php if (!empty($cronograma)): ?>
     <table class="table table-bordered table-striped">
@@ -42,10 +48,8 @@ ob_start();
                     <td>
                         <?php
                         if (!empty($pago['medio'])) {
-                            // Si tiene medio de pago, está pagado
                             echo '<span class="badge bg-success">Pagado</span>';
                         } else {
-                            // Si no tiene medio de pago, está pendiente
                             echo '<span class="badge bg-warning text-dark">Pendiente</span>';
                         }
                         ?>
@@ -58,7 +62,7 @@ ob_start();
     <p>No se encontraron pagos para este contrato.</p>
 <?php endif; ?>
 
-<a href="index.php" class="btn btn-secondary mt-3">Volver a contratos</a>
+<a href="indexContrato.php" class="btn btn-secondary mt-3">Volver a contratos</a>
 
 <?php
 $content = ob_get_clean();

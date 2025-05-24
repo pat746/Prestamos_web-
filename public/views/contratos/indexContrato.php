@@ -6,7 +6,7 @@ $contratos = $controller->index();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $success = $controller->store($_POST);
     if ($success) {
-        header('Location: index.php');
+        header('Location: indexContrato.php');
         exit;
     } else {
         $error = "Error al registrar contrato. Datos incorrectos o faltantes.";

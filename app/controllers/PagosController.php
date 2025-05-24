@@ -6,10 +6,11 @@ class PagoController {
     private $pagoModel;
     private $contratoModel;
 
-    public function __construct() {
-        $this->pagoModel = new Pago();
-        $this->contratoModel = new Contrato();
-    }
+   public function __construct() {
+    $this->pagoModel = new Pago(); // ✅ Asegúrate que esto esté bien
+    $this->contratoModel = new Contrato();
+}
+
 
     public function index($idcontrato) {
         // Obtener datos del contrato
@@ -21,7 +22,13 @@ class PagoController {
         $fechainicio = $contrato['fechainicio'];
         $diapago = (int)$contrato['diapago'];
         $numcuotas = (int)$contrato['numcuotas'];
-        $monto_cuota = $contrato['monto'];
+        $montoPrestamo = (float)$contrato['monto'];
+
+        // Calcular cuota mensual (anualidad) con interés del 5% mensual
+        $interesMensual = 0.05;
+        $factor = pow(1 + $interesMensual, $numcuotas);
+        $monto_cuota = $montoPrestamo * ($interesMensual * $factor) / ($factor - 1);
+        $monto_cuota = round($monto_cuota, 2);
 
         // Obtener pagos ya realizados
         $pagosStmt = $this->pagoModel->getByContrato($idcontrato);
